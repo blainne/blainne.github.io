@@ -6,7 +6,6 @@ highlighter:         true
 
 # Permalinks
 permalink: pretty
-relative_permalinks: true
 
 # Setup
 title:            Science, fiction, code
