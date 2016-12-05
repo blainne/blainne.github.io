@@ -1,0 +1,28 @@
+kramdown
+kramdown:
+  extensions: ["tables"]
+
+highlighter:         true
+
+# Permalinks
+permalink: pretty
+relative_permalinks: true
+
+# Setup
+title:            Science, fiction, code
+tagline:          'chronicles of a programmer'
+description:      ''
+url:              http://blainne.github.io
+baseurl:          /
+
+author:
+  name:           'blainne'
+  #url:            https://twitter.com/mdo
+
+paginate:         5
+
+# Custom vars
+version:          2.1.0
+
+github:
+  repo:           github.com/blainne/blainne.github.io
