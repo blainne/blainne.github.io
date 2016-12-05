@@ -1,4 +1,4 @@
-kramdown
+markdown: kramdown
 kramdown:
   extensions: ["tables"]
 
