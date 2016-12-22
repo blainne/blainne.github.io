@@ -4,8 +4,8 @@ title: About
 ---
 
 ### Author
-Hi, I'm Grzegorz Sławecki. I live in Poland, in the town of [Wieliczka], which is world-famous for it's old salt mine. 
-I'm a professional programmer, currently creating in .NET related technologies, However I try not to be ignorant of other software ecosystems. 
+Hi, my name is Grzegorz Sławecki. I live in Poland, in the town of [Wieliczka], which is world-famous for it's old salt mine. 
+I'm a professional programmer, currently creating in .NET related technologies, although I do my best not to be ignorant of other software ecosystems. 
 I'm also a huge fan of functional programming, and a firm believer in great engineering.
 
 ### Blog
