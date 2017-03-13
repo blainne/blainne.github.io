@@ -26,11 +26,19 @@
         {% endif %}
       {% endfor %}
 
-      <a class="sidebar-nav-item" href="{{ site.github.repo }}/archive/v{{ site.version }}.zip">Download</a>
       <a class="sidebar-nav-item" href="{{ site.github.repo }}">GitHub project</a>
-      <span class="sidebar-nav-item">Currently v{{ site.version }}</span>
     </nav>
 
-    <p>&copy; {{ site.time | date: '%Y' }}. All rights reserved.</p>
+    <style>
+          .license {
+            font-size: 8px;
+          }
+    </style>
+    
+    <p class = "license">Licensing info:
+            <br/>articles - <a href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution Share Alike</a>
+            <br/>code samples - <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2.0</a>
+
+    </p>
   </div>
 </div>

@@ -3,28 +3,18 @@ layout: page
 title: About
 ---
 
-<p class="message">
-  Hey there! This page is included as an example. Feel free to customize it for your own use upon downloading. Carry on!
-</p>
+### Author
+Hi, my name is Grzegorz Sławecki. I live in Poland, in the town of [Wieliczka], which is world-famous for it's old salt mine. 
+I'm a professional programmer, currently creating in .NET related technologies, although I do my best not to be ignorant of other software ecosystems. 
+I'm also a huge fan of functional programming, and a firm believer in great engineering.
 
-In the novel, *The Strange Case of Dr. Jeykll and Mr. Hyde*, Mr. Poole is Dr. Jekyll's virtuous and loyal butler. Similarly, Poole is an upstanding and effective butler that helps you build Jekyll themes. It's made by [@mdo](https://twitter.com/mdo).
+### Blog
+The idea for this blog is to be a documentation for my personal discoveries about writing good software. 
+I also hope the articles published here will bring value to anyone reading them, and to me as well.
+You might expect lots of F# code, but also some thought on software design in general. For future I plan not to limit to F# only.
 
-There are currently two themes built on Poole:
 
-* [Hyde](http://hyde.getpoole.com)
-* [Lanyon](http://lanyon.getpoole.com)
 
-Learn more and contribute on [GitHub](https://github.com/poole).
 
-## Setup
 
-Some fun facts about the setup of this project include:
-
-* Built for [Jekyll](http://jekyllrb.com)
-* Developed on GitHub and hosted for free on [GitHub Pages](https://pages.github.com)
-* Coded with [Sublime Text 2](http://sublimetext.com), an amazing code editor
-* Designed and developed while listening to music like [Blood Bros Trilogy](https://soundcloud.com/maddecent/sets/blood-bros-series)
-
-Have questions or suggestions? Feel free to [open an issue on GitHub](https://github.com/poole/issues/new) or [ask me on Twitter](https://twitter.com/mdo).
-
-Thanks for reading!
+[Wieliczka]: https://en.wikipedia.org/wiki/Wieliczka
