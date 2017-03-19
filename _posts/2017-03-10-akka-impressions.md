@@ -23,7 +23,29 @@ This probably was one of the first very characteristic things I noticed.
 ###Language support is important
 
  
+Akka
+ - very good for top down design
+     - receive actor and all state methods on top with meaningful names
+     - very readable
 
+- pattern for tasks is verbose
+- weak typing
+- 
+    
+-testing
+    - hard to verify state of actor
+        - state should be hidden
+        - state should only be available through messages
+        - exposing state through public properties would break actor idea
+        - public state could be only used in tests, but such things tend to be abused
+    - independently testable (decoupled by design)
+-actor are bubbles of state
+-asynchrony is hard (no guarantees on order of messages from different actors)
+    - answer to message sent by actor in state A can be received after actor changed state to B
+
+
+-logging 
+   - serilog dont log actors with {@Actor} (destructuring)
 
 
 [Akka.NET] getakka.net
