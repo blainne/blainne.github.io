@@ -30,17 +30,19 @@ Injecting internal state via constructor while saner is also more difficult beca
 In my tests, I took another approach that looks to be more actor-model compliant. Getting actors to intended state by sending them a bunch of messages that will make them transition there from their initial state. Like this:
 
 {% highlight csharp %}
-    //given
-    ...
+//given
+...
 
-    //when
-    testedActor.Tell(someMsg1);
-    testedActor.Tell(someMsg2);
-    testedActor.Tell(someMsg3);
-    testedActor.Tell(finalMsg); // this message should actually trigger the tested behavior
-    
-    //then
-    ...
+//when
+testedActor.Tell(someMsg1);
+testedActor.Tell(someMsg2);
+testedActor.Tell(someMsg3);
+
+// this message should actually trigger the tested behavior
+testedActor.Tell(finalMsg); 
+
+//then
+...
 {% endhighlight %}
 
 My thinking is that this is an antipattern in the world of unit tests. It assumes that all the reactions for messages 1 to 3 are already working correctly. For me, it's not a unit test at all. In fact, it tests a longer scenario.
@@ -51,7 +53,7 @@ Testing an actor means sending a message to it and expecting some message in res
 
 But as I mentioned, I simply stopped considering them to be "unit" tests.
 
-**This concludes part 1 of this series. In the next parts I want to focus on topics of asynchronicity and language support for actor model.**
+*This concludes part 1 of this series. In the next parts I want to focus on topics of asynchronicity and language support for actor model.*
 
 [Akka.NET] getakka.net
 [actor model] http://www.brianstorti.com/the-actor-model/
