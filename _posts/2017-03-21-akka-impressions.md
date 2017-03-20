@@ -5,9 +5,10 @@ tags: [Akka.NET]
 description: ""
 keywords: akka.net
 published: true
+comments: true
 ---
 
-Recently I finished a major development task, which makes big use of the [Akka.NET]. Since this was the first time when I used it for a serious software, I ended up with many conclusions that - I believe - might help someone who's considering going this way.
+Recently I finished a major development task, which makes big use of the [Akka.NET](http://getakka.net). Since this was the first time when I used it for a serious software, I ended up with many conclusions that - I believe - might help someone who's considering going this way.
 
 Don't get me wrong - I'm certainly not an expert in this area. What I want to discuss is what I struggled with and what was great. And all this from the perspective of Akka's fresh apprentice. I decided to write this because I think there is a lack of this kind of analysis related to Akka.
 
@@ -48,7 +49,7 @@ testedActor.Tell(finalMsg);
 My thinking is that this is an antipattern in the world of unit tests. It assumes that all the reactions for messages 1 to 3 are already working correctly. For me, it's not a unit test at all. In fact, it tests a longer scenario.
 Yet, I think this kind of tests is quite valuable in this model, so in the end, I chose this way.
 
-But that's not all about testing. There's more. There's asynchrony. 
+However, that's not all about testing. There's more. There's asynchrony. 
 Testing an actor means sending a message to it and expecting some message in response. If we designed our AUT to use asynchronous (preferred) communication via `Tell()` method, our test doesn't block on this call. So we need to give the actor some time to do it's processing and react in the way we expect. The standard `ExpectMsg()` family of assertion methods provided by Akka's authors all have so timeouts after which they fail. The `ExpectNoMsg()` has to wait for it's entire "timeout". This adds another dimension of complexity to our tests and once again violates the principles of a good unit test. 
 
 But as I mentioned, I simply stopped considering them to be "unit" tests.
