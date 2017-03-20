@@ -11,7 +11,7 @@ Recently I finished a major development task, which makes big use of the [Akka.N
 
 Don't get me wrong - I'm certainly not an expert in this area. What I want to discuss is what I struggled with and what was great. And all this from the perspective of Akka's fresh apprentice. I decided to write this because I think there is a lack of this kind of analysis related to Akka.
 
-I don't want to give long explanations on what exactly Akka.NET is since You can easily find good sources, starting with their website. To just give few words: it is a toolkit and runtime that allows employing the [actor model] approach in .NET software. Akka's is advertised as a way to do concurrent and distributed applications, which has something to do with the actor model stuff but also with a system building philosophy adopted from Erlang. 
+I don't want to give long explanations on what exactly Akka.NET is since You can easily find good sources, starting with their website. To just give few words: it is a toolkit and runtime that allows employing the [actor model](http://www.brianstorti.com/the-actor-model/) approach in .NET software. Akka's is advertised as a way to do concurrent and distributed applications, which has something to do with the actor model stuff but also with a system building philosophy adopted from Erlang. 
 
 This series of articles assumes You already know what the actor model is and that You have some initial knowledge on Akka.NET's usage. In specific, it would be good to know about ReceiveActors and the concept of "becoming".
 
@@ -24,7 +24,7 @@ Normally, for testing purpose, I'd inject such things via setters/constructor in
 Injecting internal state via constructor while saner is also more difficult because of the concept of actor Props which are Akka's way to spawn new actors. Just take a look:
 
 {% highlight csharp %}
-    var actor = Sys.ActorOf(Props.Create(() => new MyActorClass()));
+var actor = Sys.ActorOf(Props.Create(() => new MyActorClass()));
 {% endhighlight %}
 
 In my tests, I took another approach that looks to be more actor-model compliant. Getting actors to intended state by sending them a bunch of messages that will make them transition there from their initial state. Like this:
@@ -55,5 +55,4 @@ But as I mentioned, I simply stopped considering them to be "unit" tests.
 
 *This concludes part 1 of this series. In the next parts I want to focus on topics of asynchronicity and language support for actor model.*
 
-[Akka.NET] getakka.net
-[actor model] http://www.brianstorti.com/the-actor-model/
+
