@@ -9,9 +9,9 @@ I'm a professional programmer, currently creating in .NET related technologies, 
 I'm also a huge fan of functional programming, and a firm believer in great engineering.
 
 ### Blog
-The idea for this blog is to be a documentation for my personal discoveries about writing good software. 
+The idea for this blog is to be a documentation for my personal discoveries about writing software. 
 I also hope the articles published here will bring value to anyone reading them, and to me as well.
-You might expect lots of F# code, but also some thought on software design in general. For future I plan not to limit to F# only.
+You might expect lots of C# and F# code, but also some thought on software design in general. Since I'm passionate about learning different programming languages and models, this blog will not be limited to those two mentioned only.
 
 
 
