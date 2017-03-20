@@ -54,6 +54,7 @@ Testing an actor means sending a message to it and expecting some message in res
 
 But as I mentioned, I simply stopped considering them to be "unit" tests.
 
+
 *This concludes part 1 of this series. In the next parts I want to focus on topics of asynchronicity and language support for actor model.*
 
 
