@@ -24,13 +24,13 @@ Normally, for testing purpose, I'd inject such things via setters/constructor in
 
 Injecting internal state via constructor while saner is also more difficult because of the concept of actor Props which are Akka's way to spawn new actors. Just take a look:
 
-{% highlight csharp %}
+~~~~ csharp
 var actor = Sys.ActorOf(Props.Create(() => new MyActorClass()));
-{% endhighlight %}
+~~~~ 
 
 In my tests, I took another approach that looks to be more actor-model compliant. Getting actors to intended state by sending them a bunch of messages that will make them transition there from their initial state. Like this:
 
-{% highlight csharp %}
+~~~~ csharp
 //given
 ...
 
@@ -45,6 +45,7 @@ testedActor.Tell(finalMsg);
 //then
 ...
 {% endhighlight %}
+~~~~
 
 My thinking is that this is an antipattern in the world of unit tests. It assumes that all the reactions for messages 1 to 3 are already working correctly. For me, it's not a unit test at all. In fact, it tests a longer scenario.
 Yet, I think this kind of tests is quite valuable in this model, so in the end, I chose this way.
