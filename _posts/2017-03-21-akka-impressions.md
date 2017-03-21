@@ -16,7 +16,7 @@ I don't want to give long explanations on what exactly Akka.NET is since You can
 
 This series of articles assumes You already know what the actor model is and that You have some initial knowledge on Akka.NET's usage. In specific, it would be good to know about ReceiveActors and the concept of "becoming".
 
-###Akka.NET is hard to unit test
+### Akka.NET is hard to unit test
 This probably was one of the first very characteristic things I noticed. While the authors provide some tooling and libraries to simplify it, it is lots of boilerplate code and the shape of the tests is something that in a normal object-oriented world would be a red light for me.
 What's the case? Most of the non-trivial actors I implemented were, in fact, little state machines (`Become()` was being used often to switch between states). If I want to write a test that assumes actor under test (AUT) is already in a given state I need to somehow I need to initialize it somehow. See, the state of an actor is not the only current set of message handling methods ("how it will react to messages in this state"), but also any internal ...state (like values of any fields, etc.).
 
