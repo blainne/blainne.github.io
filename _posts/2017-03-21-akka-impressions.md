@@ -57,6 +57,6 @@ But as I mentioned, I simply stopped considering them to be "unit" tests.
 
 
 
-*This concludes part 1 of this series. In the next parts I want to focus on topics of asynchronicity and language support for actor model.*
+*This concludes part 1 of the series. In the next parts I want to focus on topics of asynchronicity and language support for actor model.*
 
 
