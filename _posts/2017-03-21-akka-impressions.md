@@ -18,7 +18,7 @@ This series of articles assumes You already know what the actor model is and tha
 
 ### Akka.NET is hard to unit test
 This probably was one of the first very characteristic things I noticed. While the authors provide some tooling and libraries to simplify it, it is lots of boilerplate code and the shape of the tests is something that in a normal object-oriented world would be a red light for me.
-What's the case? Most of the non-trivial actors I implemented were, in fact, little state machines (`Become()` was being used often to switch between states). If I want to write a test that assumes actor under test (AUT) is already in a given state I need to somehow I need to initialize it somehow. See, the state of an actor is not the only current set of message handling methods ("how it will react to messages in this state"), but also any internal ...state (like values of any fields, etc.).
+What's the case? Most of the non-trivial actors I implemented were, in fact, little state machines (`Become()` was being used often to switch between states). If I want to write a test that assumes actor under test (AUT) is already in a given state I need to initialize it somehow. See, the state of an actor is not the only current set of message handling methods ("how it will react to messages in this state"), but also any internal ...state (like values of any fields, etc.).
 
 Normally, for testing purpose, I'd inject such things via setters/constructor injection. But with actors, adding setters is simply against the model. Actors should communicate only via messages. Sure, one can justify that setters are only for testing and they'll never be used in production code, but You know - it's a promise one cannot fulfill unless being the only developer through the entire lifespan of the code. Once You expose a setter or even a getter, everyone can use it if he has appropriately typed reference to it. And I'm not even sure if it's concurrency-safe to use a getter of an actor inside the code of another actor - again because of the model.
 
@@ -44,7 +44,6 @@ testedActor.Tell(finalMsg);
 
 //then
 ...
-{% endhighlight %}
 ~~~~
 
 My thinking is that this is an antipattern in the world of unit tests. It assumes that all the reactions for messages 1 to 3 are already working correctly. For me, it's not a unit test at all. In fact, it tests a longer scenario.
