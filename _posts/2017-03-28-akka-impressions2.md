@@ -4,7 +4,7 @@ title: "Experience of Akka.NET, part 2"
 tags: [Akka.NET]
 description: ""
 keywords: akka.net
-published: false
+published: true
 comments: true
 excerpt_separator: <!--more-->
 ---
