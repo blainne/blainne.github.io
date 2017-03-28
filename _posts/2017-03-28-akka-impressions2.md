@@ -39,10 +39,16 @@ This description naturally makes a name of the message handling method:
 
     private void Ready()
     {
-        Receive<CheckPleaseMsg>(msg => ConfirmAndTellCashierActorToPrepareTheBill(msg));
-        Receive<CheckReadyMsg>(msg => AddYourNoteAndSendToTableActor(msg));
+        Receive<CheckPleaseMsg>(msg => 
+                ConfirmAndTellCashierActorToPrepareTheBill(msg));
+
+        Receive<CheckReadyMsg>(msg => 
+                AddYourNoteAndSendToTableActor(msg));
+
         Receive<MealOrderBeginningMsg>(msg => BecomeNoting(msg));
-        Receive<MealOrderCompleteMsg>(msg => BecomeReadyAndPassOrderToChefActor());
+        
+        Receive<MealOrderCompleteMsg>(msg => 
+                BecomeReadyAndPassOrderToChefActor());
     } 
 ~~~~
 
