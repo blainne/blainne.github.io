@@ -1,10 +1,10 @@
 ---
 layout: post
 title: "Splitting data structures through each element (F#)"
-tags: [Akka.NET]
+tags: [F#, unzip]
 description: ""
 keywords: fsharp, unzip
-published: true
+published: false
 comments: true
 excerpt_separator: <!--more-->
 ---
