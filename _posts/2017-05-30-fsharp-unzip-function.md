@@ -36,9 +36,9 @@ In the above case the selectors I mentions would be `spaceship -> spaceship.Name
 ### The purpose
 I have to admit, this kind of function seems to have very limited usage. It happened only once that I needed something like this - but when I started to implement it, I just found it to be a good function to exercise with.
 
-Almost always it seems to be a better idea to transform our input list using the standard `map` function and only at the last point, after applying all the transformations to do the unzipping. And this last step only if we really need to have two separate collections - which is rarely the case (at least, in my experience).
+Almost always it seems to be a better idea to transform our input list using the standard `map` function and at the last point, after applying all the transformations, do the unzipping. And this last step only if we really need to have two separate collections - which is rarely the case (at least, in my experience).
 
-So, why to write about it? As mentioned, I found it to be a great exercise. Moreover it's a good study of design considerations.
+So, why to write a blog post about it? As mentioned, I found it to be a great exercise. Moreover it's a good study of design considerations.
 
 ### The type
 The explicitly typed header of our function looks like this:
@@ -51,8 +51,32 @@ let unzip<'a, 'r1, 'r2>
     :'r1 seq * 'r2 seq
 ~~~~
 
-Please note the return value which is `'r1 seq * 'r2 seq`. We said we want our function to return two collections. Clearly, a function can only return one thing, so that's why the output of the function is a tuple of two collections.
+Please note the return value which is `'r1 seq * 'r2 seq`. We said we want our function to return two collections. Clearly, a function can only return one thing, so that's why the output is a tuple of two collections.
 
-In some later versions we will start using F#'s native list type instead of sequence, just to gain some better readability by saving few lines of converting the types.
+In some of the further examples we will start using F#'s native list type instead of sequence, mainly to use some of it's unique properties. An F# list can always be cast to a sequence, so in general this doesn't change too much in the concept itself.
+
+### Approach one - an easy one.
+The idea is like this: when we transform (project) a sequence of things into a sequence of another things we usually use the `map` function. When we want to transform into two sequences why not to use `map` twice?
+
+~~~~ fsharp
+let unzip<'a, 'r1, 'r2>
+        (selector1:'a->'r1)
+        (selector2:'a->'r2) 
+        (items:'a seq)
+    :'r1 seq * 'r2 seq =
+    
+    let s1 = items |> Seq.map selector1
+    let s2 = items |> Seq.map selector2
+
+    (s1, s2)
+~~~~
+
+This function is so simple, it could even be written as a one-liner. We just want to be a bit verbose, since this is for learning purposes. More: we don't really need the types to be explicit. F#'s type inference works great here, so from now on, I'll skip the type annotations.
+
+This first naive version of unzip has a huge drawback: it iterates over the sequence twice. Let's try to fix it.
+
+### Approach 2 - the basic fold
+
+
 
 
