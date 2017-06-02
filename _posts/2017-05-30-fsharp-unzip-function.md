@@ -53,7 +53,7 @@ let unzip<'a, 'r1, 'r2>
 
 Please note the return value which is `'r1 seq * 'r2 seq`. We said we want our function to return two collections. Clearly, a function can only return one thing, so that's why the output is a tuple of two collections.
 
-In some of the further examples we will start using F#'s native list type instead of sequence, mainly to use some of it's unique properties. An F# list can always be cast to a sequence, so in general this doesn't change too much in the concept itself.
+In some of the further examples we will start using F#'s native list type instead of sequence, mainly to use some of it's unique properties. In general this doesn't change too much in the concept itself.
 
 ### Approach one - an easy one.
 The idea is like this: when we transform (project) a sequence of things into a sequence of another things we usually use the `map` function. When we want to transform into two sequences why not to use `map` twice?
@@ -76,7 +76,39 @@ This function is so simple, it could even be written as a one-liner. We just wan
 This first naive version of unzip has a huge drawback: it iterates over the sequence twice. Let's try to fix it.
 
 ### Approach 2 - the basic fold
+Folds are very powerful functions. You can easily implement a `map` just using some member of the family of folds. Let's just try to use one of the most basic ones which is just `Seq.fold`. 
 
+~~~~ fsharp
+let unzip2 select1 select2 items =
 
+    let add item seq  = 
+        seq |> Seq.append (Seq.init 1 ( fun _ -> item ))
 
+    let folder (seq1, seq2) item = 
+        (seq1 |> add (select1 item), 
+         seq2 |> add (select2 item))
+        
+    items
+    |> Seq.fold folder (Seq.empty, Seq.empty) 
+~~~~
+
+Here we start with an initial accumulator being just two empty sequences. In each recursive step fold will invoke the `folder` function which creates a new accumulator value being the result of appending results of both selectors to previous accumulator value. Nothing particularly fancy, just building two collections as we're traversing the input.
+
+This code doesn't have the drawback of our first approach, so it doesn't go twice through the input. 
+
+### Approach 3 - lets try lists
+Lists in F# are one of the most common collection types. Definitely, our unzipping function should also be available for them. Let's try to create something similar to `unzip2` that would work with F# lists:
+
+~~~~ fsharp
+let tMap (fn1,fn2) (item1,item2) = (fn1 item1, fn2 item2)
+
+let unzip3 select1 select2 items =
+
+    let folder (lst1, lst2) item = 
+        (select1 item)::lst1, (select2 item)::lst2
+        
+    items
+    |> Seq.fold folder ([], []) 
+    |> tMap (List.rev, List.rev) 
+~~~~
 

@@ -1,5 +1,5 @@
 module Unzipping
-//double iteration - bad
+
 let unzip<'a, 'r1, 'r2>
         (selector1:'a->'r1)
         (selector2:'a->'r2) 
@@ -23,10 +23,6 @@ let unzip2 select1 select2 items =
     items
     |> Seq.fold folder (Seq.empty, Seq.empty) 
 
-
-//fixes ineffective append from previous
-//but forces us to reverse the lists which still may be as ineffective as double iteration
-
 //introduce tuple map:
 let tMap (fn1,fn2) (item1,item2) = (fn1 item1, fn2 item2)
 
@@ -37,12 +33,8 @@ let unzip3 select1 select2 items =
         
     items
     |> Seq.fold folder ([], []) 
-    |> tMap (List.rev, List.rev) //tMap could be one arg function in this case but cannot be because of lack of HKTs
-    |> tMap (Seq.ofList, Seq.ofList)
-//foldback
+    |> tMap (List.rev, List.rev) 
 
-//working on lists only so we can get rid of 
-//tuple mapping
 let unzip4 select1 select2 items =
 
     let folder item (lst1, lst2)= 
@@ -51,10 +43,7 @@ let unzip4 select1 select2 items =
     List.foldBack folder items ([], []) 
 
 
-//mutable lists would solve the issue of ineffective append
-//but it's .NET specific implementation (is it worth mentioning?)
 type MutList<'t> = System.Collections.Generic.List<'t>
-let toSeq<'t> l = l :> seq<'t>
 let unzip5 select1 select2 items =
     let folder (netLst1 : MutList<'r1>, netLst2 : MutList<'r2>) item = 
         netLst1.Add(select1 item)
@@ -63,7 +52,7 @@ let unzip5 select1 select2 items =
     
     items
     |> Seq.fold folder (new MutList<'r1>(), new MutList<'r2>()) 
-    |> tMap (toSeq<'r1>, toSeq<'r2>)
+
 
 
 //performance considerations
