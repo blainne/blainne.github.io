@@ -12,7 +12,7 @@ F# standard library for sequences (the "enumerables" in F#'s nomenclature) has t
 What I'd like discuss today is a function that does the opposite: deconstructing an collection into two based on some arbitrary selectors.
 <!--more-->
 
-To give some better example, we want a function that can take a list like this
+To give some better example, we want a function that can take a collection like this
 
 ~~~~ fsharp
 [
@@ -24,7 +24,7 @@ To give some better example, we want a function that can take a list like this
 ]
 ~~~~
 
-and return two lists:
+and return two collections:
 ~~~~ fsharp
 ["Normandy"; "Rocinante"; "Enterprise"; "Atlantis"; "Serenity"]
 
@@ -38,7 +38,7 @@ I have to admit, this kind of function seems to have very limited usage. It happ
 
 Almost always it seems to be a better idea to transform our input list using the standard `map` function and at the last point, after applying all the transformations, do the unzipping. And this last step only if we really need to have two separate collections - which is rarely the case (at least, in my experience).
 
-So, why to write a blog post about it? As mentioned, I found it to be a great exercise. Moreover it's a good study of design considerations.
+So, why to write a blog post about it? As mentioned, I found it to be a great code & design exercise. I spent quite a lot of time playing with this, some things forced me to learn new things, so I'm just sharing.
 
 ### The type
 The explicitly typed header of our function looks like this:
@@ -71,11 +71,11 @@ let unzip<'a, 'r1, 'r2>
     (s1, s2)
 ~~~~
 
-This function is so simple, it could even be written as a one-liner. We just want to be a bit verbose, since this is for learning purposes. More: we don't really need the types to be explicit. F#'s type inference works great here, so from now on, I'll skip the type annotations.
+This function is so simple, it could even be written as a one-liner. We're a bit verbose, since this is for learning purposes. More: we don't really need the types to be explicit. F#'s type inference works great here, so from now on, I'll skip the type annotations.
 
 This first naive version of unzip has a huge drawback: it iterates over the sequence twice. Let's try to fix it.
 
-### Approach 2 - the basic fold
+### Approach two - the basic fold
 Folds are very powerful functions. You can easily implement a `map` just using some member of the family of folds. Let's just try to use one of the most basic ones which is just `Seq.fold`. 
 
 ~~~~ fsharp
@@ -96,7 +96,7 @@ Here we start with an initial accumulator being just two empty sequences. In eac
 
 This code doesn't have the drawback of our first approach, so it doesn't go twice through the input. 
 
-### Approach 3 - lets try lists
+### Approach three - lets try lists
 Lists in F# are one of the most common collection types. Definitely, our unzipping function should also be available for them. Let's try to create something similar to `unzip2` that would work with F# lists:
 
 ~~~~ fsharp
@@ -112,3 +112,39 @@ let unzip3 select1 select2 items =
     |> tMap (List.rev, List.rev) 
 ~~~~
 
+Note, the `tMap` function which is just a quick helper that can map a tuple of two elements using two functions accordingly. We could use a lambda instead of a named function, but I believe it improves readability to have it like it is right now.
+
+The `unzip3` function, while works fine, has this final list reversing, which just looks bad. Of course, here, with `fold`, it's necessary since we're prepending (using cons operator: `::`) our accumulator with new element in every step. Remember, in previous example we were appending, but trying to do it with native F# lists would be a bad idea in terms of performance.
+
+There is however a very simple way to get rid of this final reversing step.
+
+### Approach four - foldBack to the rescue
+We can simply use `foldBack` instead of `fold`. It effectively iterates the list starting from the end, which will nicely work with our prepending operation. There is no more need to reverse the output collections as they're being built in the right order all the time here.
+
+~~~~ fsharp
+let unzip4 select1 select2 items =
+
+    let folder item (lst1, lst2)= 
+        (select1 item)::lst1, (select2 item)::lst2
+        
+    List.foldBack folder items ([], []) 
+~~~~
+
+Now this is pretty damn simple piece of code, isn't it?
+
+### Bonus - the trees
+Sequences, lists, etc are collections that organize the data in some linear order. There are however some other possibilities to do it. One of those, that is common in programming are trees. 
+
+Turns out we can have our unzip function working also with trees. First, let's define an example tree structure we'll work with.
+
+~~~~ fsharp
+    type Tree<'a> =
+        | Leaf of 'a
+        | Node of 'a * Tree<'a> list 
+~~~~
+
+Now we'll also going to need something that will work similar to our `foldback` function in case of lists. 
+
+As to why we need something like `foldback` and not just `fold` I suggest to read [short](https://sidburn.github.io/blog/2016/05/28/catamorphisms) or [long](http://fsharpforfunandprofit.com/series/recursive-types-and-folds.html) article (or both). Enough to say here, that we'll be building trees during our function just like we've been building lists. And our immutable `Tree` type needs to be built bottom up.
+
+In fact, we'll use a much simpler folding function, `cata` (again I refer to the articles if this is something new). For our purpose it does exactly the same, `foldback` would do.
