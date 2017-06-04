@@ -138,9 +138,9 @@ Sequences, lists, etc are collections that organize the data in some linear orde
 Turns out we can have our unzip function working also with trees. First, let's define an example tree structure we'll work with.
 
 ~~~~ fsharp
-    type Tree<'a> =
-        | Leaf of 'a
-        | Node of 'a * Tree<'a> list 
+type Tree<'a> =
+    | Leaf of 'a
+    | Node of 'a * Tree<'a> list 
 ~~~~
 
 Now we'll also going to need something that will work similar to our `foldback` function in case of lists. 
@@ -148,3 +148,32 @@ Now we'll also going to need something that will work similar to our `foldback` 
 As to why we need something like `foldback` and not just `fold` I suggest to read [short](https://sidburn.github.io/blog/2016/05/28/catamorphisms) or [long](http://fsharpforfunandprofit.com/series/recursive-types-and-folds.html) article (or both). Enough to say here, that we'll be building trees during our function just like we've been building lists. And our immutable `Tree` type needs to be built bottom up.
 
 In fact, we'll use a much simpler folding function, `cata` (again I refer to the articles if this is something new). For our purpose it does exactly the same, `foldback` would do.
+
+~~~~ fsharp
+let rec cata fLeaf fNode item=
+    let recur = cata fLeaf fNode
+    match item with
+    | Leaf(a) -> fLeaf(a)
+    | Node(a, subTrees) -> fNode(a, subTrees |> List.map recur )  
+~~~~
+
+Once we have that, our `unzip` for `Tree` type can be implemented like below:
+
+~~~~ fsharp
+let unzipTree<'a, 'r1, 'r2>
+        (select1:'a->'r1)
+        (select2:'a->'r2)             
+        (tree: Tree<'a>)
+    : Tree<'r1> * Tree<'r2> =
+
+    let unzipLeaf a= 
+        (Leaf(select1 a), Leaf(select2 a))
+    
+    let unzipNode (a,subtrees) =
+        (Node(select1 a, subtrees |> List.map fst),
+         Node(select2 a, subtrees |> List.map snd))
+
+    tree |> cata unzipLeaf unzipNode
+~~~~
+
+If we compare it to our previous code example, the code looks very similar 
