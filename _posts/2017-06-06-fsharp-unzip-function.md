@@ -211,7 +211,7 @@ commandStructure
 
 And the output is as expected - two trees:
 
-~~~~ fsharp
+~~~~ ocaml
 (Node
    ("Normandy",
     [Node ("Enterprise",[Leaf "Atlantis"; Leaf "Rocinante"]); Leaf "Serenity"]),
