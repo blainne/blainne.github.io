@@ -16,7 +16,7 @@ What I'd like to discuss today is a function that does the opposite: deconstruct
 
 To give some better example, we want a function that can take a collection like this
 
-~~~~ fsharp
+~~~~ ocaml
 [
     {Name = "Normandy"; AppearsIn = "Mass Effect"}
     {Name = "Enterprise"; AppearsIn = "Star Trek"}
@@ -27,7 +27,7 @@ To give some better example, we want a function that can take a collection like 
 ~~~~
 
 and return two collections:
-~~~~ fsharp
+~~~~ ocaml
 ["Normandy"; "Rocinante"; "Enterprise"; "Atlantis"; "Serenity"]
 
 ["Mass Effect"; "The expanse"; "Star Trek"; "Real life :-)"; "Firefly"]
@@ -45,7 +45,7 @@ So, why to write a blog post about it? As mentioned, I found it to be a great co
 ### The type
 The explicitly typed header of our function looks like here:
 
-~~~~ fsharp
+~~~~ ocaml
 let unzip<'a, 'r1, 'r2>
         (selector1:'a->'r1)
         (selector2:'a->'r2) 
@@ -60,7 +60,7 @@ In some of the further examples, we will start using F#'s native list type inste
 ### Approach one - an easy one.
 The idea is like this: when we transform (project) a sequence of things into a sequence of other things we usually use the `map` function. When do we want to transform into two sequences why not to use `map` twice?
 
-~~~~ fsharp
+~~~~ ocaml
 let unzip<'a, 'r1, 'r2>
         (selector1:'a->'r1)
         (selector2:'a->'r2) 
@@ -80,7 +80,7 @@ This first naive version of `unzip` has a huge drawback: it iterates over the se
 ### Approach two - the basic fold
 Folds are very powerful functions. You can easily implement a `map` just using some member of the family of folds. Let's try to use one of the most basic ones - `Seq.fold`. 
 
-~~~~ fsharp
+~~~~ ocaml
 let unzip2 select1 select2 items =
 
     let add item seq  = 
@@ -101,7 +101,7 @@ This code doesn't have the drawback of our first approach, so it doesn't go twic
 ### Approach three - let's try lists
 List in F# is one of the most common collection types. Definitely, our unzipping function should also be available for them. Let's try to create something similar to `unzip2` that would work with F# lists:
 
-~~~~ fsharp
+~~~~ ocaml
 let tMap (fn1,fn2) (item1,item2) = (fn1 item1, fn2 item2)
 
 let unzip3 select1 select2 items =
@@ -123,7 +123,7 @@ There is, however, a very simple way to get rid of that final `List.rev` step.
 ### Approach four - foldBack to the rescue
 We can simply use `foldBack` instead of `fold`. It effectively iterates the list starting from the end, which will nicely work with our prepending operation. There is no more need to reverse the output collections as they're being built in the right order all the time here.
 
-~~~~ fsharp
+~~~~ ocaml
 let unzip4 select1 select2 items =
 
     let folder item (lst1, lst2)= 
@@ -139,7 +139,7 @@ Sequences, lists, etc are collections that organize the data in some linear orde
 
 Turns out we can have a version of our unzip function working with trees. First, let's define an example tree structure we'll work with.
 
-~~~~ fsharp
+~~~~ ocaml
 type Tree<'a> =
     | Leaf of 'a
     | Node of 'a * Tree<'a> list 
@@ -151,7 +151,7 @@ As to why we need something like `foldback` and not just `fold` I suggest to rea
 
 In fact, we'll use a much simpler folding function, `cata` (again I refer to the articles if this is something new). For our purpose it does exactly the same, `foldback` would do.
 
-~~~~ fsharp
+~~~~ ocaml
 let rec cata fLeaf fNode item=
     let recur = cata fLeaf fNode
     match item with
@@ -161,7 +161,7 @@ let rec cata fLeaf fNode item=
 
 Once we have that, our `unzip` for `Tree` type can be implemented like below:
 
-~~~~ fsharp
+~~~~ ocaml
 let unzipTree<'a, 'r1, 'r2>
         (select1:'a->'r1)
         (select2:'a->'r2)             
@@ -182,7 +182,7 @@ If we compare it to our previous example, the code looks very similar. We got tw
 
 This time, let's look at some example of using it:
 
-~~~~ fsharp
+~~~~ ocaml
 type Spaceship = 
     {Name: string; AppearsIn: string}
 
