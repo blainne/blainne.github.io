@@ -54,11 +54,6 @@ let unzip5 select1 select2 items =
     |> Seq.fold folder (new MutList<'r1>(), new MutList<'r2>()) 
 
 
-
-//performance considerations
-//append on sequence is associative
-//can fold be parallelized
-
 module Tree =
     type Tree<'a> =
         | Leaf of 'a
