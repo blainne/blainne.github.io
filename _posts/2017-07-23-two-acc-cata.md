@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Splitting data structures through each element (F#)"
+title: "Extending folds for trees"
 tags: [F#, cata, tree]
 description: ""
 keywords: fsharp, tree, catamorphism, cata
