@@ -24,7 +24,7 @@ type Tree<'a> =
  | Node of 'a * Tree<'a> * Tree<'a>
 ~~~~
 
-###`Cata` function
+### `Cata` function
 Let's discuss "standard", simple, non tail-recursive `cata` function.
 
 ~~~~ ocaml
