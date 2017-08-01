@@ -28,7 +28,9 @@ type Tree<'a> =
 Let's discuss "standard", simple, non tail-recursive `cata` function.
 
 ~~~~ ocaml
-(* type: Tree<'a> -> 'b -> ('a -> 'b -> 'b -> 'b) -> 'b *)
+(* 
+ * type: Tree<'a> -> 'b -> ('a -> 'b -> 'b -> 'b) -> 'b 
+ *)
 let rec cata tree leafVal fNode =
     let recur t = cata t leafVal fNode 
     match tree with
@@ -49,7 +51,9 @@ While the `fNode` function was chosen as a simple example, in an advanced usage 
 
 Time for a left fold:
 ~~~~ ocaml
-(* type: Tree<'a> -> 'b -> ('b -> 'a -> 'b) -> 'b *)
+(* 
+ * type: Tree<'a> -> 'b -> ('b -> 'a -> 'b) -> 'b 
+ *)
 let rec fold tree acc fNode = 
     let recur tree acc = fold tree acc fNode
 
@@ -82,11 +86,11 @@ Let's first see one possible `cataPlus` implementation, and then we'll try to co
 
 ~~~~ ocaml
 (* type: 
-*   Tree<'a> 
-*      -> 'b * 'c 
-*      -> ('b -> 'a -> 'b) * ('a -> 'c -> 'c -> 'b -> 'c) 
-*      -> 'c
-*)
+ *   Tree<'a> 
+ *      -> 'b * 'c 
+ *      -> ('b -> 'a -> 'b) * ('a -> 'c -> 'c -> 'b -> 'c) 
+ *      -> 'c
+ *)
 let rec cataPlus tree (rootAcc, leafAcc) (fNodeDown, fNodeUp) =
     match tree with
     | Leaf -> leafAcc
@@ -154,7 +158,7 @@ Here, our journey starts with 6 tanks of fuel as the initial value. At each node
 The true decision logic happens in the `decideLongerSubRoute` (which is passed to cataPlus as `fNodeUp`). First, it'll check whether we already reached the fuel limit. If so, it'll return the empty list of travel segments. It means that we simply can't go any further in this subtree. 
 If this isn't the case, it'll compare current subtrees to find which one offers the longer list of travel segments. Then it'll simply prepend current node to the longer path and return it as the new path. 
 
-*Note, that even if we may not use results of subtrees because of initial fuel level checking, those values already have been calculated. This is some inefficiency that needs to be considered. It would probably not be such a big problem in a language with lazy evaluation, e.g. Haskell.*
+*Note: even if we may not use results of subtrees because of initial fuel level checking, those values already have been calculated. This is some inefficiency that needs to be considered. It would probably not be such a big problem in a language with lazy evaluation, e.g. Haskell.*
 *We could also use the ["fold with early exit"](https://sidburn.github.io/blog/2016/05/07/cps-fold) technique, but that would add even more complexity.*
 
 After running the code, the value of `mostStopsTravelPlan` is the following list of travel segments:
