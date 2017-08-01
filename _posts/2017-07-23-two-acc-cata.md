@@ -83,7 +83,7 @@ Thinking about that further, we may think about the depth as some kind of cumula
 
 Let's first see one possible `cataPlus` implementation, and then we'll try to come up with some example of how to use it.
 
-### The `cataPLus` function
+### The `cataPlus` function
 
 ~~~~ ocaml
 (* type: 
