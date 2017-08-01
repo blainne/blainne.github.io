@@ -13,6 +13,7 @@ One the most important differences is the input to the function at each recursiv
 
 What we'll see today is a function that in some way combines those two, so that, at each step, it can use reduced subtrees (accumulated from leaves) and a value accumulated from the root.
 <!--more-->
+
 *If You don't know the concept of catamorphisms I encourage You to read [short](https://sidburn.github.io/blog/2016/05/28/catamorphisms) or [long](http://fsharpforfunandprofit.com/series/recursive-types-and-folds.html) article (or both)*
 *All the code samples from this text can be found [here](https://github.com/blainne/blainne.github.io/blob/master/code_samples/fsharp-cataPlus.fs).*
 
@@ -24,7 +25,7 @@ type Tree<'a> =
  | Node of 'a * Tree<'a> * Tree<'a>
 ~~~~
 
-### `Cata` function
+### The `Cata` function
 Let's discuss "standard", simple, non tail-recursive `cata` function.
 
 ~~~~ ocaml
@@ -47,7 +48,7 @@ The image below presents this. The `leafVal` is 0, and the `fNode` function is j
 
 While the `fNode` function was chosen as a simple example, in an advanced usage You could use in Your logic the fact, that You always see three separate values as an input to the function. 
 
-###`Fold` function
+### The `Fold` function
 
 Time for a left fold:
 ~~~~ ocaml
