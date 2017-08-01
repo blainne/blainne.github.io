@@ -82,7 +82,7 @@ Thinking about that further, we may think about the depth as some kind of cumula
 
 Let's first see one possible `cataPlus` implementation, and then we'll try to come up with some example of how to use it.
 
-### The function
+### The `cataPLus` function
 
 ~~~~ ocaml
 (* type: 
@@ -96,7 +96,10 @@ let rec cataPlus tree (rootAcc, leafAcc) (fNodeDown, fNodeUp) =
     | Leaf -> leafAcc
     | Node(v, left, right) ->
         let recur t = 
-            cataPlus t (fNodeDown rootAcc v, leafAcc) (fNodeDown, fNodeUp) 
+            cataPlus 
+                t 
+                (fNodeDown rootAcc v, leafAcc) 
+                (fNodeDown, fNodeUp) 
         fNodeUp v (recur left) (recur right) rootAcc
 ~~~~
 
@@ -118,13 +121,13 @@ type TravelSegment =
     }
 
 let travelDecisions = 
-    Node({Fuel= 0<tanks>; Destination= "Warsaw"}, 
-        Node({Fuel= 5<tanks>; Destination= "Paris"},
-            Node({Fuel= 3<tanks>; Destination= "Barcelona"}, Leaf, Leaf),
-            Node({Fuel= 2<tanks>; Destination= "Zurich"} ,Leaf,Leaf)), 
-        Node({Fuel= 2<tanks>; Destination= "Budapest"},
-            Node({Fuel= 4<tanks>; Destination= "Athens"}, Leaf, Leaf),
-            Node({Fuel= 1<tanks>;Destination= "Vienna"}, Leaf, Leaf)))
+  Node({Fuel= 0<tanks>; Destination= "Warsaw"}, 
+    Node({Fuel= 5<tanks>; Destination= "Paris"},
+      Node({Fuel= 3<tanks>; Destination= "Barcelona"}, Leaf, Leaf),
+      Node({Fuel= 2<tanks>; Destination= "Zurich"} ,Leaf,Leaf)), 
+    Node({Fuel= 2<tanks>; Destination= "Budapest"},
+      Node({Fuel= 4<tanks>; Destination= "Athens"}, Leaf, Leaf),
+      Node({Fuel= 1<tanks>;Destination= "Vienna"}, Leaf, Leaf)))
 ~~~~
 
 *Note: I wanted to come up with a close to real life example that would be simple and useful in demonstrating the concept described in this article. It completely ignores the fact that You could potentially reach a destination in a few different ways (which would introduce some cycles in the graph). It also assumes You can not go back to a previous destination to select a different route.*
