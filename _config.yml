@@ -12,7 +12,7 @@ title:            Science, fiction, code
 tagline:          'chronicles of a programmer'
 description:      ''
 url:              http://blainne.github.io
-baseurl:          /
+baseurl:          ""
 
 author:
   name:           'blainne'
