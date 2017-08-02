@@ -1,4 +1,4 @@
-module CataPlus
+module CataPlus 
 
 type Tree<'a> =
  | Leaf
@@ -30,49 +30,51 @@ let rec cataPlus tree (rootAcc, leafAcc) (fNodeDown, fNodeUp) =
             fNodeUp v (recur left) (recur right) rootAcc
 
 
-let sampleTree = 
-    Node(1, 
-        Node(2, 
-            Node(3,Leaf,Leaf), 
-            Node(6,Leaf,Leaf)), 
-        Node(9,
-            Leaf,
-            Node(11, Leaf, Leaf)))
+module Samples =    
+    let sampleTree = 
+        Node(1, 
+            Node(2, 
+                Node(3,Leaf,Leaf), 
+                Node(6,Leaf,Leaf)), 
+            Node(9,
+                Leaf,
+                Node(11, Leaf, Leaf)))
 
-[<Measure>]type tanks; 
-type TravelSegment = 
-    {
-        Fuel: int<tanks>;
-        Destination: string;
-    }
+    [<Measure>]type tanks; 
 
-let travelDecisions = 
-    Node({Fuel= 0<tanks>; Destination= "Warsaw"}, 
-        Node({Fuel= 5<tanks>; Destination= "Paris"},
-            Node({Fuel= 3<tanks>; Destination= "Barcelona"}, Leaf, Leaf),
-            Node({Fuel= 2<tanks>; Destination= "Zurich"} ,Leaf,Leaf)), 
-        Node({Fuel= 2<tanks>; Destination= "Budapest"},
-            Node({Fuel= 4<tanks>; Destination= "Athens"}, Leaf, Leaf),
-            Node({Fuel= 1<tanks>;Destination= "Vienna"}, Leaf, Leaf)))
+    type TravelSegment = 
+        {
+            Fuel: int<tanks>;
+            Destination: string;
+        }
 
-let inline updateFuelLevel fuelLeft segment= 
-    fuelLeft - segment.Fuel
+    let travelDecisions = 
+        Node({Fuel= 0<tanks>; Destination= "Warsaw"}, 
+            Node({Fuel= 5<tanks>; Destination= "Paris"},
+                Node({Fuel= 3<tanks>; Destination= "Barcelona"}, Leaf, Leaf),
+                Node({Fuel= 2<tanks>; Destination= "Zurich"} ,Leaf,Leaf)), 
+            Node({Fuel= 2<tanks>; Destination= "Budapest"},
+                Node({Fuel= 4<tanks>; Destination= "Athens"}, Leaf, Leaf),
+                Node({Fuel= 1<tanks>;Destination= "Vienna"}, Leaf, Leaf)))
 
-let decideLongerSubRoute segment lLongest rLongest fuelLeft =
-    let longerSubRoute = 
-        if(List.length lLongest > List.length rLongest)
-        then lLongest
-        else rLongest 
-    
-    if fuelLeft <= 0<tanks> 
-    then []
-    else segment::longerSubRoute
+    let inline updateFuelLevel fuelLeft segment= 
+        fuelLeft - segment.Fuel
 
-let mostStopsTravelPlan =
-    cataPlus 
-        travelDecisions 
-        (6<tanks>, [])
-        (updateFuelLevel, decideLongerSubRoute)
+    let decideLongerSubRoute segment lLongest rLongest fuelLeft =
+        let longerSubRoute = 
+            if(List.length lLongest > List.length rLongest)
+            then lLongest
+            else rLongest 
+        
+        if fuelLeft <= 0<tanks> 
+        then []
+        else segment::longerSubRoute
+
+    let mostStopsTravelPlan =
+        cataPlus 
+            travelDecisions 
+            (6<tanks>, [])
+            (updateFuelLevel, decideLongerSubRoute)
 
                
 

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Extending folds for trees"
+title: "Extending folds for trees (F#)"
 tags: [F#, cata, tree]
 description: ""
 keywords: fsharp, tree, catamorphism, cata
