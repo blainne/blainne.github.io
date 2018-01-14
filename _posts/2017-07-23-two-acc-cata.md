@@ -115,6 +115,7 @@ What we come up is a decision tree where each node stands as a next possible des
 
 ~~~~ ocaml
 [<Measure>]type tanks; 
+
 type TravelSegment = 
     {
         Fuel: int<tanks>;
