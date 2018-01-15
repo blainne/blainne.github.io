@@ -11,8 +11,7 @@ excerpt_separator: <!--more-->
 We all know the concept of a function. To each value in the input domain it assigns exactly one output in the output domain. In programming languages as well as in math classes we mostly deal with functions expressed as formulas, but it is not the only way to describe some function. While it's usually the most convenient one, sometimes it's easier to write a function in form of a table. In context of programming we may think about this table as a `Map` or `Dictionary` type. In this post we'll try to explore this idea and look how far we can get when expressing functions as F# maps.
 <!--more-->
 
-Let's consider simple square function. It takes a number and returns that number squared. We usually write it using the 
-`f(x) = x*x` notation. This is what I call "formula notation". It tells us how to compute the output from the input.
+Let's consider simple square function. It takes a number and returns that number squared. We usually write it using the `f(x) = x*x` notation. This is what I call "formula notation". It tells us how to compute the output from the input.
 The "table notation" would be something of this form:
 
 |Input|Output|
@@ -31,10 +30,10 @@ This has some important implications:
  2 There's nothing like generic function here.
  3 We can express partial functions.
 
-Let's discuss these points a bit more.
-First point means that if we're able to express a computationally expensive function to it's table representation we're trading CPU time for memory usage. Actually, we even have a well known technique which bases on this tradeoff: memoization. Memoized function is basically building a table representation of itself in memory. The second time You call a memoized function with an argument You used before it'll, go to that table and give You the results in instant time. 
+Let's discuss these bullets a bit more.
+First point means that if we're able to express a computationally expensive function to it's table representation we're trading CPU time for memory usage. Actually, we even have a well known technique which bases on this tradeoff: memoization. Memoized function is basically building a table representation of itself in memory. The second time You call a it with an argument You used before it'll, go to that table and give You the results in instant time.
 
-The second point we can think of like this: to define a table function we need to write down all the possible inputs and outputs. But if we do this we're already fixed on input and output types. If we'd like the function to support some other type as well we'd have to define second version of this function.
+About the generics we can think like this: to define a table function we need to write down all the possible inputs and outputs. But if we do this we're already fixed on input and output types. If we'd like the function to support some other type as well we'd have to define second version of this function.
 
 The third is a bit more tricky. A partial function is one which doesn't handle all possible input values of a type. Generally it's something wrong but even [haskell has some] (https://wiki.haskell.org/Partial_functions). On the other hand it seems that they're more about strong typing than anything else. Think about that. If a function, let's say integer division, doesn't handle all the possible input values it means that the set of integers is not the true input domain of this function. The integers without zero are. Since it would be inconvenient to create a new type `IntegersWithoutZero` and converting the value when needed every time we want to divide a number, programming languages usually push that duty to programmer to check for zeroes when dividing.
 When expressing functions as tables, it's much more likely to skip the input values we're sure we'll never use - since otherwise we'd have to explicitly write them down. If You keep a table function for some computationally expensive fancy cryptography stuff We'll never cover the entire input domain in the table - We'll write some code to check for that. 
@@ -60,7 +59,7 @@ let GetInhabitants =
     | Europa -> Set[Aliens]
 ~~~~
 
-That produces a normal formula expressed function. But we can keep this mapping in... a `Map`:
+That produces a typical, formula expressed function. But we can keep this mapping in... a `Map`:
 ~~~~ ocaml
 // Map<CelestialBody, Set<Inhabitants>>
 let ``Get inhabitants`` =
@@ -69,10 +68,72 @@ let ``Get inhabitants`` =
         Mars, Set[Robots]
         Europa, Set[Aliens]
     ]
-~~~~ 
+~~~~
 
-We also need some small facility to be able to "run" our map. 
+*Note: For this post I decided to have the naming convention where "table functions" are named with normal sentences containing punctuation and spaces wrapped with ``` `` ``` (double backticks). F# allows for that and I think in this case it's a pleasingly weird way to distinguish standard and table functions.*
+
+What's the advantage of implementing it this way? 
+One is that we can easily serialize it and transfer over the network. We also have a standard data structure which we can manipulate just as we would normally do. We'll try one such manipulation later in this post.
+
+We have a map, we also need some small facility to be able to "run" our map - function. That's nothing else but just getting a value of given key. We shall note that find will throw if key is not in the map. You may think about this behavior as an equivalent of throwing `ArgumentException`.
+
 ~~~~ ocaml
 // Map<'a,'b> -> 'a -> 'b
 let run fm arg = Map.find arg fm
+
+//returns set [Robots]
+run ``Get inhabitants`` Mars 
+~~~~
+
+If we treat maps as functions, we should be able to compose them. For normal functions we have the `>>` operator. For table functions we need to give up on trying to define the operator itself as a table function - because of the inability to have proper generics. Instead we will use a normal function - `Map.map`.
+
+~~~~ ocaml
+// Map<'a,'b> -> Map<'b,'c> -> Map<'a,'c>
+let fmCompose fm1 fm2 = 
+    fm1
+    |> Map.map (fun _ v -> run fm2 v)
+
+let (>-) = fmCompose
+~~~~
+
+The signature suggests it's right. If we consider `Map<'a,'b>` to be equivalent of function `a -> b` then the type signature is similar to the one of the `>>` operator (`('a -> 'b) -> ('b -> 'c) -> 'a -> 'c)`. The difference is related to currying, which we don't explore in this post.
+
+Let's try to compose some maps now. We will of course need to define one more function with type matching the ``` ``Get inhabitants`` ``` to be able to compose. To have some nice additional twist lets also define the table version of `not` operator.
+
+~~~~ ocaml
+// Map<Set<Inhabitants>,bool>
+let ``Can they co-exist?`` =
+    Map[
+        Set[Aliens;Humans;Robots], false
+        Set[Humans; Robots], true
+        Set[Robots; Aliens], true
+        Set[Aliens; Humans], false
+        Set[Aliens], true
+        Set[Robots], true
+        Set[Humans], true
+    ]
+
+// Map<bool,bool>
+let ``Negate answer`` =
+    Map[
+        true, false
+        false, true
+    ]
+~~~~
+
+Now we compose the three table functions.
+
+~~~~ ocaml
+// Map<CelestialBody,bool>
+let ``Is there inhabitant conflict?`` =
+    ``Get inhabitants`` 
+    >- ``Can they co-exist?``
+    >- ``Negate answer``
+~~~~
+
+What is nice, the F# interactive prints the resulting map right away so we don't even need to "run" the map to see what are the results:
+
+~~~~ ocaml
+val ( Is there inhabitant conflict? ) : Map<CelestialBody,bool> =
+  map [(Earth, false); (Mars, false); (Europa, false)]
 ~~~~
