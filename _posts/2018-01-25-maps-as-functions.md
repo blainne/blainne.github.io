@@ -141,7 +141,10 @@ val ( Is there inhabitant conflict? ) : Map<CelestialBody,bool> =
   map [(Earth, false); (Mars, false); (Europa, false)]
 ~~~~
 
-Let's now consider how we could express a very important subset of functions - higher order functions as tables. As we know, [higher order functions](https://en.wikipedia.org/wiki/Higher-order_function) is a function which can take functions as parameters or return them (or both at the same time)
+### Higher order functions
+
+Let's now consider how we could express one of the most important for programmers kinds of functions. As we know, [higher order functions](https://en.wikipedia.org/wiki/Higher-order_function) is a function which can take functions as parameters or return them (or both at the same time)
+
 Creating a table function which would return another function is relatively simple - we need to create a `Map<'a, 'Map<'b'c>>`. It's the equivalent of `'a -> ('b -> 'c)` function.
 
 Let's try to write a function which will answer a question whether given inhabitants visited given celestial body. The type should be equivalent of `Inhabitants -> (CelesialBody -> bool)`, so we need a `Map<Inhabitants, Map<CelestialBody, bool>>`. We got three kinds of inhabitants so our outer map should provide three relations (unless we decide to only make a partial function). The three are:
@@ -181,3 +184,25 @@ let ``Was an existence form there?``=
         Robots, ``Was a robot there?``
     ]
 ~~~~
+
+
+##### A small interlude: currying
+If we think about that, the presented function has a very interesting structure. It takes an input parameter and then returns the result which is also a function, so it allows us to pass second parameter to it. We have now a two parameter function! We just need yet another bit of utility to use it as we would do with normal two parameter function:
+
+~~~~ ocaml
+let run2 fm arg1 arg2 =
+   run (run fm arg1) arg2
+
+run2 ``Was an existence form there?`` Humans Mars
+~~~~
+
+In fact, in F# all multi parameter normal functions can be considered higher order in this way. A (normal) function `a -> b -> c` can always be treated as a function, which given a parameter of type `a` returns a function `b -> c`.
+
+All this boils down to an observation, that table functions are naturally [curried](https://fsharpforfunandprofit.com/posts/currying/).
+
+##### Higher order functions continued
+We still need to implement support for functions which take other functions as an input. The issue here is that more often than not the total number of possible input functions of given type (say `Inhabitans -> CelestialBody`) is beyond what gets practical to support in terms of table functions (remember we got to write all of them as tables as well). And if we don't handle the entire possible input space, our function is partial.
+
+If we only think about `bool -> bool` functions, there are only few of them possible, so we could seriously think about implementing our equivalent of (`(bool -> bool) -> something). Here however, we're going to stay with partial functions.
+
+
