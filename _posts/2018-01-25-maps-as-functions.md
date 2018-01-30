@@ -203,6 +203,53 @@ All this boils down to an observation, that table functions are naturally [curri
 ##### Higher order functions continued
 We still need to implement support for functions which take other functions as an input. The issue here is that more often than not the total number of possible input functions of given type (say `Inhabitans -> CelestialBody`) is beyond what gets practical to support in terms of table functions (remember we got to write all of them as tables as well). And if we don't handle the entire possible input space, our function is partial.
 
-If we only think about `bool -> bool` functions, there are only few of them possible, so we could seriously think about implementing our equivalent of (`(bool -> bool) -> something). Here however, we're going to stay with partial functions.
+If we only think about `bool -> bool` functions, there are only few of them possible, so we could seriously think about implementing our equivalent of (`(bool -> bool) -> something). Here however, we're going to define a partial function.
+
+For our example let's create a table function which will take a `Map<CelestialBody, bool>` as a first parameter and a tuple of celestial bodies as a second parameter (we already know how to create two parameter functions) and will return a tuple of answers. The equivalent normal function could look like this:
+
+~~~~ ocaml 
+let tupleMap f (t1,t2) = (f t1, f t2)
+~~~~
+
+Of course, as we discussed earlier we will not be able to make our function generic in anyway, but it sort of shows what we want to do.
+
+~~~~ ocaml
+//Map<Map<CelestialBody,bool>, Map<(CelestialBody * CelestialBody),(bool * bool)>>
+let ``Give answer for a tuple:`` =
+    Map[
+       ``Was a robot there?``, 
+        Map[(Mars,Earth),(true, true); (Earth, Europa), (true, true)];
+       
+       ``Was a human there?``, 
+       Map[(Mars,Earth),(false, true); (Earth, Europa), (true, false)];
+    ]
+~~~~
+
+Let's focus on the type first. It's a map (that is: a table function) which relates another two maps. So we can say it takes a table function as a parameter and returns another table function as a result. We've seen this trick with returning a map in previous section and we already we can treat it as a way to allow passing second argument.
+
+Let's run it (please note how below code reads fluently):
+
+~~~~ ocaml
+// returns (true, false)
+run2 ``Give answer for a tuple:`` ``Was a human there?`` (Earth, Europa)
+
+// returns (true, true)
+run2 ``Give answer for a tuple:`` ``Was a robot there?`` (Mars, Earth)
+
+// throws KeyNotFoundException
+run2 ``Give answer for a tuple:`` ``Was a human there?`` (Earth, Mars)
+
+// throws KeyNotFoundException
+run2 ``Give answer for a tuple:`` ``Was an alien there?`` (Earth, Europa)
+~~~~
+
+The first two examples confirm that our function is working fine. The next two ones need some explanation. 
+In the third example we pass a tuple which we don't support as our second parameter (the key of returned map). This means that we're in fact returning a partial function. The last example takes a first parameter which we don't handle at all. It means that the entire ` ``Give answer for a tuple:`` ` is a partial function.
+
+Let the conclusion for this section be that we can still fallback to partial functions when it's impractical to handle the entire possible input space. We just need to make sure we never pass an illegal input - as the compiler won't warn us.
+The fact that tables involve no computation at all make the concept of higher order table functions rather non practical since we need to precompute everything during implementation. 
+
+
+
 
 
