@@ -11,6 +11,8 @@ excerpt_separator: <!--more-->
 We all know the concept of a function. To each value in the input domain it assigns exactly one output in the output domain. In programming languages as well as in math we mostly deal with functions expressed as formulas, but it is not the only way to describe some function. While it's usually the most convenient one, sometimes it's easier to write a function in form of a table. In context of programming we may think about such table as a `Map` or `Dictionary` type. In this post we'll try to explore this idea and look how far we can get when expressing functions as F# maps.
 <!--more-->
 
+*All the code samples from this text can be found [here](https://github.com/blainne/blainne.github.io/blob/master/code_samples/fsharp-tableFunctions.fs).*
+
 Let's consider simple square function. It takes a number and returns that number squared. We usually write it using the `f(x) = x*x` notation. This is "formula notation". It tells us how to compute the output from the input.
 The "table notation" would be something of this form:
 
@@ -252,6 +254,7 @@ Let the conclusion for this section be that we can still fallback to partial fun
 The fact that tables involve no computation at all make the concept of higher order table functions rather not useful, since we need to precompute everything during implementation.
 
 ### Modifying table functions
+
 There's one more interesting thing we can do with table functions. Since our functions are maps, we can use available map operations to add new or alter existing entries. Let's consider the following operation:
 
 ~~~~ ocaml
@@ -275,7 +278,7 @@ let ``What are the satellites?`` =
     ]
 
 let ``What are the satellites (improved)?`` = 
-    extend 
+    extend
         ``What are the satellites?`` 
         (Map[Europa,[]; Mars, ["Phobos"; "Deimos"]])
 ~~~~
@@ -295,10 +298,8 @@ Works as expected, we were able to extend our table function with new knowledge.
 The final thing to notice is that fact that we could implement our table functions using a mutable data structure, like the standard .NET's `Dictionary<k,v>` type. Our extend function would then have the property of truly modifying the functions. Now that would be insane!
 
 ### One unknown thing
-One very important thing we can do with "normal" functions is recursion. It may seem intuitive, that expressing recursion with table functions is not possible. The reasoning could be that a function calling itself involves the computation step. The recursive function also has some return value and table functions simply provide this final value as an output. There's no place for a recursive call... 
+
+One very important thing we can do with "normal" functions is recursion. It may seem intuitive, that expressing recursion with table functions is not possible. The reasoning could be that a function calling itself involves the computation step. The recursive function also has some return value and table functions simply provide this final value as an output. There's no place for a recursive call...
 However, I have some doubts about this. I am yet to grok the [Y combinator](https://stackoverflow.com/questions/93526/what-is-a-y-combinator) and some other stuff related to the recursion so with my current knowledge it would be to much of a speculation to state that it's not doable.
 
 *If this post resonates with You in any way, please leave a comment. I'd love to have some feedback.*
-
-
-
