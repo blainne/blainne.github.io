@@ -191,6 +191,7 @@ let ``Was an existence form there?``=
 
 
 ##### A small interlude: currying
+
 If we think about that, the presented function has a very interesting structure. It takes an input parameter and then returns the result which is also a function, so it allows us to pass second parameter to it. We have now a two-parameter function! We just need yet another bit of utility to use it as we would do with normal two-parameter function:
 
 ~~~~ ocaml
@@ -205,13 +206,14 @@ In fact, in F# all multi-parameter normal functions can be considered higher ord
 All this boils down to an observation, that table functions are naturally [curried](https://fsharpforfunandprofit.com/posts/currying/).
 
 ##### Higher order functions continued
+
 We still need to implement support for functions which take other functions as an input. The issue here is that more often than not the total number of possible input functions of given type (e.g. `DateTime -> int`, how many different functions can we have) is beyond what gets practical to support in terms of table functions (remember we got to write all of them as tables as well). And if we don't handle the entire possible input space, our function is partial.
 
 If we consider functions mapping some types with very small amount values, like `bool -> bool`, there are only few of them possible, so we could seriously think about implementing our equivalent of (`(bool -> bool) -> something`). Here however, we're going to define a partial function.
 
 For our example let's create a table function which will take a `Map<CelestialBody, bool>` as a first parameter and a tuple of celestial bodies as a second parameter (we already know how to create two-parameter functions) and will return a tuple of answers. The equivalent normal function could look like this:
 
-~~~~ ocaml 
+~~~~ ocaml
 let tupleMap f (t1,t2) = (f t1, f t2)
 ~~~~
 
@@ -221,10 +223,10 @@ Of course, as we discussed earlier we will not be able to make our function gene
 //Map<Map<CelestialBody,bool>, Map<(CelestialBody * CelestialBody),(bool * bool)>>
 let ``Give answer for a tuple:`` =
     Map[
-       ``Was a robot there?``, 
+       ``Was a robot there?``,
         Map[(Mars,Earth),(true, true); (Earth, Europa), (true, true)];
-       
-       ``Was a human there?``, 
+
+       ``Was a human there?``,
        Map[(Mars,Earth),(false, true); (Earth, Europa), (true, false)];
     ]
 ~~~~
@@ -277,9 +279,9 @@ let ``What are the satellites?`` =
         Mars, ["Phobos"]
     ]
 
-let ``What are the satellites (improved)?`` = 
+let ``What are the satellites (improved)?`` =
     extend
-        ``What are the satellites?`` 
+        ``What are the satellites?``
         (Map[Europa,[]; Mars, ["Phobos"; "Deimos"]])
 ~~~~
 
