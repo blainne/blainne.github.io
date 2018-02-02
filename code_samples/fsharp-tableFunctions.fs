@@ -102,7 +102,7 @@ run ``Is there inhabitant conflict?`` Mars
 
 let tupleMap f (t1,t2) =
     (f t1, f t2)
-let ``Give answer for a tuple:`` =
+let ``Give an answer for a tuple:`` =
     Map[
        ``Was a robot there?``, 
         Map[(Mars,Earth),(true, true); (Earth, Europa), (true, true)];
@@ -111,13 +111,13 @@ let ``Give answer for a tuple:`` =
        Map[(Mars,Earth),(false, true); (Earth, Europa), (true, false)];
     ]
 
-run2 ``Give answer for a tuple:`` ``Was a human there?`` (Earth, Europa)
-run2 ``Give answer for a tuple:`` ``Was a robot there?`` (Mars, Earth)
+run2 ``Give an answer for a tuple:`` ``Was a human there?`` (Earth, Europa)
+run2 ``Give an answer for a tuple:`` ``Was a robot there?`` (Mars, Earth)
 
 //throws
-//run2 ``Give answer for a tuple:`` ``Was a human there?`` (Earth, Mars)
+//run2 ``Give an answer for a tuple:`` ``Was a human there?`` (Earth, Mars)
 //throws
-//run2 ``Give answer for a tuple:`` ``Was an alien there?`` (Earth, Europa)
+//run2 ``Give an answer for a tuple:`` ``Was an alien there?`` (Earth, Europa)
 
 let extend original ext =
     ext
