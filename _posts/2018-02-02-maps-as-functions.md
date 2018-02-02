@@ -45,7 +45,7 @@ The fourth implication is almost intuitive. Since there's no true execution or c
 
 Well, enough discussion. Let's go to some code. We need some types to work on:
 
-~~~~ ocaml
+~~~~ fsharp
 type CelestialBody =
     | Earth | Mars | Europa 
 
@@ -55,7 +55,7 @@ type Inhabitants =
 
 Our first function will be to get inhabitants of given celestial body. The standard F# way would probably be something like this:
 
-~~~~ ocaml
+~~~~ fsharp
 // CelestialBody -> Set<Inhabitants>
 let GetInhabitants =
     function
@@ -65,7 +65,7 @@ let GetInhabitants =
 ~~~~
 
 That produces a typical, formula expressed function. But we can keep the same relation in... a `Map`:
-~~~~ ocaml
+~~~~ fsharp
 // Map<CelestialBody, Set<Inhabitants>>
 let ``Get inhabitants`` =
     Map[
@@ -82,7 +82,7 @@ One is that we can easily serialize the entire function and transfer it over the
 
 We have a map, we also need some small facility to be able to "run" our map - function. That's nothing else but just getting a value of given key. We shall note that find will throw if the key is not present in the map. You may think about this behavior as an equivalent of throwing `ArgumentException`.
 
-~~~~ ocaml
+~~~~ fsharp
 // Map<'a,'b> -> 'a -> 'b
 let run fm arg = Map.find arg fm
 
@@ -94,7 +94,7 @@ run ``Get inhabitants`` Mars
 
 If we treat maps as functions, we should be able to compose them. For normal functions there exists the `>>` operator (and its counterpart working in opposite direction, but we'll skip that). For table functions, we need to give up on trying to define the operator itself as a table function - because of the inability to have proper generics. Instead, we will use a normal function - `Map.map`.
 
-~~~~ ocaml
+~~~~ fsharp
 // Map<'a,'b> -> Map<'b,'c> -> Map<'a,'c>
 let fmCompose fm1 fm2 =
     fm1
@@ -107,7 +107,7 @@ The signature suggests it's right. If we consider `Map<'a,'b>` to be equivalent 
 
 Let's try to compose some maps now. We will, of course, need to define one more function with a type matching the ``` ``Get inhabitants`` ``` to be able to compose. To have some nice additional twist lets also define the table version of `not` operator.
 
-~~~~ ocaml
+~~~~ fsharp
 // Map<Set<Inhabitants>,bool>
 let ``Can they co-exist?`` =
     Map[
@@ -130,7 +130,7 @@ let ``Negate answer`` =
 
 Now we compose the three table functions.
 
-~~~~ ocaml
+~~~~ fsharp
 // Map<CelestialBody,bool>
 let ``Is there inhabitant conflict?`` =
     ``Get inhabitants`` 
@@ -140,7 +140,7 @@ let ``Is there inhabitant conflict?`` =
 
 What's nice, the F# interactive prints the resulting map right away so we don't even need to "run" the map to see what happened:
 
-~~~~ ocaml
+~~~~ fsharp
 val ( Is there inhabitant conflict? ) : Map<CelestialBody,bool> =
   map [(Earth, false); (Mars, false); (Europa, false)]
 ~~~~
@@ -153,7 +153,7 @@ Creating a table function which would return another function is relatively simp
 
 Let's try to write a function which will answer a question whether given inhabitants visited given celestial body. The type should be equivalent of `Inhabitants -> (CelestialBody -> bool)`, so we need a `Map<Inhabitants, Map<CelestialBody, bool>>`. We got three kinds of inhabitants so our outer map should provide three relations (unless we decide to only make a partial function). The three are:
 
-~~~~ ocaml
+~~~~ fsharp
 let ``Was a human there?`` =
     Map[
         Mars, false
@@ -179,7 +179,7 @@ let ``Was an alien there?`` =
 
 Great, now we can finally show our first higher order map:
 
-~~~~ ocaml
+~~~~ fsharp
 //Map<Inhabitants,Map<CelestialBody,bool>>
 let ``Was an existence form there?``=
     Map[
@@ -194,7 +194,7 @@ let ``Was an existence form there?``=
 
 If we think about that, the presented function has a very interesting structure. It takes an input parameter and then returns the result which is also a function, so it allows us to pass the second parameter to it. We have now a two-parameter function! We just need yet another bit of utility to use it as we would do with normal two-parameter function:
 
-~~~~ ocaml
+~~~~ fsharp
 let run2 fm arg1 arg2 =
    run (run fm arg1) arg2
 
@@ -213,13 +213,13 @@ If we consider functions mapping some types with very small amount values, like 
 
 For our example let's create a table function which will take a `Map<CelestialBody, bool>` as a first parameter and a tuple of celestial bodies as a second parameter (we already know how to create two-parameter functions) and will return a tuple of answers. The equivalent normal function could look like this:
 
-~~~~ ocaml
+~~~~ fsharp
 let tupleMap f (t1,t2) = (f t1, f t2)
 ~~~~
 
 Of course, as we discussed earlier we will not be able to make our function generic in any way, but it sort of shows what we want to do.
 
-~~~~ ocaml
+~~~~ fsharp
 //Map<Map<CelestialBody,bool>, Map<(CelestialBody * CelestialBody),(bool * bool)>>
 let ``Give answer for a tuple:`` =
     Map[
@@ -235,7 +235,7 @@ Let's focus on the type first. It's a map (that is: a table function) which rela
 
 Let's run it (please note how below code reads fluently):
 
-~~~~ ocaml
+~~~~ fsharp
 // returns (true, false)
 run2 ``Give an answer for a tuple:`` ``Was a human there?`` (Earth, Europa)
 
@@ -259,7 +259,7 @@ The fact that tables involve no computation at all make the concept of higher or
 
 There's one more interesting thing we can do with table functions. Since our functions are maps, we can use available map operations to add new or alter existing entries. Let's consider the following operation:
 
-~~~~ ocaml
+~~~~ fsharp
 let extend original ext =
     ext
     |> Map.fold 
@@ -271,7 +271,7 @@ The `Map.add` function will return a map containing new entry if it doesn't exis
 
 Let's see how it works:
 
-~~~~ ocaml
+~~~~ fsharp
 
 let ``What are the satellites?`` =
     Map[
@@ -287,7 +287,7 @@ let ``What are the satellites (improved)?`` =
 
 First, we define a function that enumerates the moons of a celestial body. Sometime later we notice that we forgot about one of the Mars' moons and also to make the function total, we should really handle the situation when someone passes in Europa. The output of running the above code in F# interactive is:
 
-~~~~ ocaml
+~~~~ fsharp
 val ( What are the satellites? ) : Map<CelestialBody,string list> =
   map [(Earth, ["Moon"]); (Mars, ["Phobos"])]
 
