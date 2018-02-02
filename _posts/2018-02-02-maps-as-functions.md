@@ -27,10 +27,10 @@ We see right away that it's impossible to write down such mapping for all the nu
 This is our first serious limitation: we can only express functions where the input type has a finite number of values. Although `int32` type satisfies this, it is still highly impractical to define such big tables. 
 What else can we say about it? As opposed to formulas, we don't know how to compute (calculate) the output and we don't need to - it's given right away. There are some important implications:
 
- 1 If we use a proper data structure for the table, we can have the result in constant time.
- 2 There's nothing like generic function here.
- 3 We can express partial functions.
- 4 It's not possible to define an impure function.
+ 1. If we use a proper data structure for the table, we can have the result in constant time.
+ 2. There's nothing like generic function here.
+ 3. We can express partial functions.
+ 4. It's not possible to define an impure function.
 
 Let's discuss these bullets a bit more.
 
@@ -43,7 +43,7 @@ When expressing functions as tables, it's much more likely to skip the input val
 
 The fourth implication is almost intuitive. Since there's no true execution or computation happening - there's no place for any additional behavior, so we can't have any side effects. Once a table function is defined it'll always return the same result for the same input - it's just a relation.
 
-Well, enough discussion let's go to some code. We need some types to work on:
+Well, enough discussion. Let's go to some code. We need some types to work on:
 
 ~~~~ ocaml
 type CelestialBody =
